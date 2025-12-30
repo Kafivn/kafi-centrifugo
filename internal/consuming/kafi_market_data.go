@@ -28,14 +28,22 @@ func (pc *partitionConsumer) processMarketDataRecord(ctx context.Context, record
 	}
 	// Determine channel based on topic type
 	key := ""
+	channel := record.Topic
+
 	switch record.Topic {
 	case "market.quote", "market.bidoffer", "market.quote.oddlot":
 		key = "s"
 	case "market.dealNotice", "market.advertised":
 		key = "m"
+
+	// Logic mdds
+	// SendKafka(transactionId, "market.extra", "Update", extraQuote, extraQuote.S)
+	// SendRedis("market.bidoffer", extraQuote, transactionId)
+	case "market.extra":
+		key = "s"
+		channel = "market.bidoffer"
 	}
 
-	channel := record.Topic
 	if key != "" {
 		f := dataField.Get(key)
 		if !f.Exists() {
