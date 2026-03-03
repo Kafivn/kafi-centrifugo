@@ -8,20 +8,11 @@ For details, go to the [Centrifugo documentation site](https://centrifugal.dev).
 
 ## What's changed
 
-### Improvements
-
-* Add `use_existing_consumer` option for NATS async consumer by @b43 [#1074](https://github.com/centrifugal/centrifugo/pull/1074)
-* Support for grpc `static_metadata`, tweak http `static_headers` behaviour to match the doc [#1076](https://github.com/centrifugal/centrifugo/pull/1076)
-* New `publication_data_format` channel global and namespace option [#1085](https://github.com/centrifugal/centrifugo/pull/1085)
-* Better performance: Eliminate allocations under active batching scenario coming from Prometheus metrics. See [centrifugal/centrifuge#530](https://github.com/centrifugal/centrifuge/pull/530)
-* Better performance: Redis key build optimizations [centrifugal/centrifuge#534](https://github.com/centrifugal/centrifuge/pull/534)
-
 ### Fixes
 
-* This release addresses [#1083](https://github.com/centrifugal/centrifugo/issues/1083) by introducing `publication_data_format` mentioned above.
+* Transport write must return after data written [#1106](https://github.com/centrifugal/centrifugo/pull/1106). This was noticed in CI after a [pull request](https://github.com/centrifugal/centrifuge-js/pull/349) made by @phront3nd3r. This is a regression from v6.6.0 due to malformed buffer reuse in WriteManyFn callback of client writer. This resulted into broken data written into connection – thus connection issues. The problem was reproducing in HTTP Stream and SSE transports (bidirectional and unidirectional). WebSocket, Webtransport, uni GRPC were not affected because they already return once data is written into connection. 
 
 ### Miscellaneous
 
-* This release is built with Go 1.25.5.
-* Updated dependencies.
-* See also the corresponding [Centrifugo PRO release](https://github.com/centrifugal/centrifugo-pro/releases/tag/v6.5.2).
+* This release is built with Go 1.25.7
+* See also the corresponding [Centrifugo PRO release](https://github.com/centrifugal/centrifugo-pro/releases/tag/v6.6.2).
